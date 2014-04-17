@@ -6,10 +6,8 @@ cookbook 'yum'
 cookbook 'simple_iptables'
 cookbook 'ntp'
 cookbook 'nginx'
-cookbook 'php-fpm'
-cookbook 'php'
+cookbook 'php', git: "git://github.com/priestjim/chef-php.git"
 cookbook 'mysql'
 cookbook 'database'
 cookbook "phpmyadmin"
-#cookbook "phpmyadmin", git: "git://github.com/sharkpp/chef-phpmyadmin.git", branch: "support_php_fpm_cookbook"
 cookbook 'piwik'

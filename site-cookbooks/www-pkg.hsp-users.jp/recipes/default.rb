@@ -25,22 +25,22 @@ execute "enable-pkg.hsp-users.jp" do
   EOC
 end
 
-php_fpm_pool "pkg.hsp-users.jp" do
-# cookbook "another-cookbook" # get template from another cookbook
-  process_manager "dynamic"
-  max_requests 5000
-  listen '/var/run/php-fpm/pkg.hsp-users.jp.php-fpm.sock'
+php_fpm "pkg.hsp-users.jp" do
+  action :add
   user 'nginx'
   group 'nginx'
-#  params 'listen.owner = ' => 'nobody',
-#         'listen.group' => 'nobody',
-#         'listen.mode' => '0666',
-#         'slowlog' => '/var/log/php-fpm/pkg.hsp-users.jp.slow.log'
-  php_options 'slowlog' => '/var/log/php-fpm/pkg.hsp-users.jp.slow.log',
-              'php_flag[display_errors]' => 'off',
-              'php_admin_value[error_log]' => '/var/log/php-fpm/pkg.hsp-users.jp.error.log',
-              'php_admin_flag[log_errors]' => 'on',
-              'php_admin_value[memory_limit]' => '32M'
+  socket true
+  socket_path '/var/run/php-fpm/pkg.hsp-users.jp.php-fpm.sock'
+  socket_perms "0666"
+#  start_servers 2
+#  min_spare_servers 2
+#  max_spare_servers 8
+#  max_children 8
+  terminate_timeout (node['php']['ini_settings']['max_execution_time'].to_i + 20)
+  slow_filename "#{node['php']['fpm_log_dir']}/pkg.hsp-users.jp.slow.log"
+  value_overrides({
+    :error_log => "#{node['php']['fpm_log_dir']}/pkg.hsp-users.jp.error.log"
+  })
 end
 
 # install git command
