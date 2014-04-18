@@ -66,7 +66,7 @@ mysql_database 'pkg_hsp_users_jp' do
   action :create
 end
 
-mysql_database_user 'pkg_hsp_users_jp_admin' do
+mysql_database_user 'pkg_admin' do
   connection    mysql_connection_info
   password      'super_secret****a'
   database_name 'pkg_hsp_users_jp'
@@ -75,7 +75,7 @@ mysql_database_user 'pkg_hsp_users_jp_admin' do
   action        :grant
 end
 
-mysql_database_user 'pkg_hsp_users_jp_user' do
+mysql_database_user 'pkg_user' do
   connection    mysql_connection_info
   password      'super_secret****b'
   database_name 'pkg_hsp_users_jp'

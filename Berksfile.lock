@@ -5,8 +5,7 @@ DEPENDENCIES
   ntp
   openssh
   php
-    git: git://github.com/priestjim/chef-php.git
-    revision: 74cde12df5699ad7454b85ea77d9662d742660cb
+    path: ../chef-php
   phpmyadmin
   piwik
   simple_iptables
@@ -54,7 +53,7 @@ GRAPH
     build-essential (>= 0.0.0)
     xml (>= 0.0.0)
     yum (>= 0.0.0)
-    yumrepo (>= 0.0.0)
+    yum-corporate (>= 0.0.0)
   phpmyadmin (1.0.6)
     apache2 (>= 0.0.0)
     nginx (>= 0.0.0)
@@ -81,7 +80,7 @@ GRAPH
   xml (1.2.4)
     build-essential (>= 0.0.0)
   yum (3.2.0)
+  yum-corporate (3.0.1)
+    yum (>= 0.0.0)
   yum-epel (0.3.6)
     yum (~> 3.0)
-  yumrepo (2.0.0)
-    yum (>= 2.3.0)

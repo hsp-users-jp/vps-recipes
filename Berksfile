@@ -6,7 +6,7 @@ cookbook 'yum'
 cookbook 'simple_iptables'
 cookbook 'ntp'
 cookbook 'nginx'
-cookbook 'php', git: "git://github.com/priestjim/chef-php.git"
+cookbook 'php', path: "../chef-php"
 cookbook 'mysql'
 cookbook 'database'
 cookbook "phpmyadmin"
