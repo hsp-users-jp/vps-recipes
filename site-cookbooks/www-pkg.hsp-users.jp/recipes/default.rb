@@ -39,7 +39,15 @@ php_fpm "pkg.hsp-users.jp" do
   terminate_timeout (node['php']['ini_settings']['max_execution_time'].to_i + 20)
   slow_filename "#{node['php']['fpm_log_dir']}/pkg.hsp-users.jp.slow.log"
   value_overrides({
+    :chdir => "/var/www/pkg.hsp-users.jp",
     :error_log => "#{node['php']['fpm_log_dir']}/pkg.hsp-users.jp.error.log"
+  })
+  value_overrides({
+    :chdir => "/var/www/pkg.hsp-users.jp",
+    :error_log => "#{node['php']['fpm_log_dir']}/pkg.hsp-users.jp.error.log"
+  })
+  env_overrides({
+    :FUEL_ENV => "production"
   })
 end
 
@@ -103,7 +111,7 @@ execute "composer-install" do
   command <<-EOC
      pushd /var/www/pkg.hsp-users.jp/
      php composer.phar self-update
-     php composer.phar install
+     php -d disable_functions="" composer.phar install
      popd
   EOC
 end
