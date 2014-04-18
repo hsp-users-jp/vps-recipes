@@ -25,12 +25,18 @@ yum_repository 'remi' do
   action :create
 end
 
-#%w{rsync}.each do |pkg|
-#    package pkg do
-#        options "--enablerepo=remi"
-#        action :install
-#    end
-#end
+%w{acpid}.each do |pkg|
+    package pkg do
+        options "--enablerepo=remi"
+        action :install
+    end
+    service pkg do
+        action :enable
+    end
+    service pkg do
+        action :start
+    end
+end
 
 # %w{mysql-server php php-pear php-mbstring php-xml php-devel php-mysql php-gd}.each do |pkg|
 #     package pkg do
