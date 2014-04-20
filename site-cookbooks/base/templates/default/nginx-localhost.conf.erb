@@ -1,0 +1,6 @@
+server {
+    listen      127.0.0.1:80;
+    server_name localhost localhost:10080;
+
+    include /etc/nginx/sites-available/localhost-*.conf;
+}

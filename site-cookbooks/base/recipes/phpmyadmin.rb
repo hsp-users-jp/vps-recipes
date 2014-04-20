@@ -7,20 +7,18 @@
 # All rights reserved - Do Not Redistribute
 #
 
-template "/etc/nginx/sites-available/phpmyadmin" do
+template "/etc/nginx/sites-available/localhost-phpmyadmin.conf" do
   source "nginx-phpmyadmin.conf.erb"
   # owner and group is root user, and permition is 644
   owner "root"
   group "root"
   mode 0644
-
-  # reload conf request to nginx
-  notifies :reload, "service[nginx]"
 end
 
-# enable phpmyadmin
-execute "enable-phpmyadmin" do
-  command <<-EOC
-     ln -fs /etc/nginx/sites-available/phpmyadmin /etc/nginx/sites-enabled/010-phpmyadmin
-  EOC
+phpmyadmin_db 'localhost' do
+	host '127.0.0.1'
+	port 3306
+	username 'root'
+	password 'qazwsx'
+	hide_dbs %w{ information_schema mysql phpmyadmin performance_schema }
 end
