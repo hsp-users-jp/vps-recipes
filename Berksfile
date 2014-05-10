@@ -9,5 +9,5 @@ cookbook 'nginx'
 cookbook 'php', path: "../chef-php"
 cookbook 'mysql'
 cookbook 'database'
-cookbook "phpmyadmin"
-cookbook 'piwik'
+cookbook 'phpmyadmin'
+cookbook 'ya-piwik', git: "https://github.com/sharkpp-cookbooks/ya-piwik.git", branch: "master"

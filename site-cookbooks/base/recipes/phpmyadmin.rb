@@ -7,7 +7,11 @@
 # All rights reserved - Do Not Redistribute
 #
 
-template "/etc/nginx/sites-available/localhost-phpmyadmin.conf" do
+include_recipe 'phpmyadmin'
+
+nginx_sites_available = "#{node['nginx']['dir']}/sites-available/localhost-phpmyadmin.conf"
+
+template nginx_sites_available do
   source "nginx-phpmyadmin.conf.erb"
   # owner and group is root user, and permition is 644
   owner "root"
