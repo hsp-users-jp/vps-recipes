@@ -1,0 +1,14 @@
+location /piwik {
+    alias <%= node['ya-piwik']['home'] %>;
+    error_log   /var/log/nginx/piwik.error.log;
+    access_log  /var/log/nginx/piwik.access.log;
+    index index.php;
+}
+
+location ~ ^/piwik.+\.php$ {
+    fastcgi_pass   unix:<%= node['ya-piwik']['fpm']['socket'] %>;
+    fastcgi_index  index.php;
+    fastcgi_split_path_info ^(.+\.php)(.*)$;
+    fastcgi_param  SCRIPT_FILENAME /var/www/html$fastcgi_script_name;
+    include        fastcgi_params;
+}

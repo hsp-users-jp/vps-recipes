@@ -7,22 +7,29 @@
 # All rights reserved - Do Not Redistribute
 #
 
-template "/etc/nginx/sites-available/pkg.hsp-users.jp" do
+o = ['!', '#', '$', '%', '&', '(', ')', '*', '+', ',', '-', '.', '/', ':', 
+     ';', '<', '=', '>', '?', '@', '[', ']', '^', '_', '{', '|', '}', '~', 
+     ('a'..'z'), ('A'..'Z'), ('0'..'9')].map { |i| i.to_a rescue i }.flatten
+
+nginx_sites_available = "#{node['nginx']['dir']}/sites-available/pkg.hsp-users.jp"
+nginx_sites_enabled   = "#{node['nginx']['dir']}/sites-enabled/pkg.hsp-users.jp"
+
+# enable pkg.hsp-users.jp
+execute "enable-pkg.hsp-users.jp" do
+  command <<-EOC
+     ln -fs #{nginx_sites_available} #{nginx_sites_enabled}
+  EOC
+  not_if { ::File.exists?(nginx_sites_enabled) }
+end
+
+template nginx_sites_available do
   source "nginx.conf.erb"
   # owner and group is root user, and permition is 644
   owner "root"
   group "root"
   mode 0644
-
   # reload conf request to nginx
   notifies :reload, "service[nginx]"
-end
-
-# enable pkg.hsp-users.jp
-execute "enable-pkg.hsp-users.jp" do
-  command <<-EOC
-     ln -fs /etc/nginx/sites-available/pkg.hsp-users.jp /etc/nginx/sites-enabled/
-  EOC
 end
 
 php_fpm "pkg.hsp-users.jp" do
@@ -38,10 +45,6 @@ php_fpm "pkg.hsp-users.jp" do
 #  max_children 8
   terminate_timeout (node['php']['ini_settings']['max_execution_time'].to_i + 20)
   slow_filename "#{node['php']['fpm_log_dir']}/pkg.hsp-users.jp.slow.log"
-  value_overrides({
-    :chdir => "/var/www/pkg.hsp-users.jp",
-    :error_log => "#{node['php']['fpm_log_dir']}/pkg.hsp-users.jp.error.log"
-  })
   value_overrides({
     :chdir => "/var/www/pkg.hsp-users.jp",
     :error_log => "#{node['php']['fpm_log_dir']}/pkg.hsp-users.jp.error.log"
@@ -98,6 +101,13 @@ mysql_database 'flush the privileges' do
   action     :query
 end
 
+ya_piwik_site 'make piwik config' do
+  idsite 1
+  siteName 'pkg.hsp-users.jp'
+  urls 'http://pkg.hsp-users.jp/'
+  action :create
+end
+
 # checkout pkg.hsp-users.jp from github.com
 git "/var/www/pkg.hsp-users.jp" do
   repository "https://github.com/hsp-users-jp/pkg.hsp-users.jp.git"
@@ -112,6 +122,30 @@ execute "composer-install" do
      pushd /var/www/pkg.hsp-users.jp/
      php composer.phar self-update
      php -d disable_functions="" composer.phar install
+     popd
+  EOC
+end
+
+%w{db.php opauth.php piwik.php}.each do |file|
+  api = YaPiwik::API.new(node.run_context)
+  idsite = api.site_id_from_site_url('http://pkg.hsp-users.jp/')
+  template "/var/www/pkg.hsp-users.jp/fuel/app/config/production/#{file}" do
+    source "fuel-#{file}.erb"
+    owner "nginx"
+    group "nginx"
+    mode 0644
+    variables({
+      :piwik_token => api.token,
+      :piwik_idsite => idsite,
+      :salt => (0...63).map { o[rand(o.length)] }.join
+    })
+  end
+end
+
+execute "migration" do
+  command <<-EOC
+     pushd /var/www/pkg.hsp-users.jp/
+     env FUEL_ENV=production php oil r migrate --all
      popd
   EOC
 end
