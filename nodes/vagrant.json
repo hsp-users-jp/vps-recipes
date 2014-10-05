@@ -1,0 +1,17 @@
+{
+  "run_list":[
+    "role[base]"
+  ],
+  "mysql": {
+    "server_root_password": "qazwsx"
+  },
+  "ya-piwik": {
+    "database": {
+      "pass": "qazwsx"
+    },
+    "root": {
+      "pass": "!qaz2wsx",
+      "email": "webmaster@example.net"
+    }
+  }
+}
