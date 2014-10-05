@@ -1,4 +1,4 @@
-site :opscode
+source 'https://api.berkshelf.com'
 cookbook 'user'
 cookbook 'sudo'
 cookbook 'openssh'
@@ -6,8 +6,9 @@ cookbook 'yum'
 cookbook 'simple_iptables'
 cookbook 'ntp'
 cookbook 'nginx'
-cookbook 'php', path: "../chef-php"
+cookbook 'php', git: 'git://github.com/priestjim/chef-php.git'
 cookbook 'mysql'
 cookbook 'database'
 cookbook 'phpmyadmin'
-cookbook 'ya-piwik', git: "https://github.com/sharkpp-cookbooks/ya-piwik.git", branch: "master"
+#cookbook 'ya-piwik', git: 'git://github.com/sharkpp-cookbooks/ya-piwik.git'
+cookbook 'ya-piwik', path: "../ya-piwik"

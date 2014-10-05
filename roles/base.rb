@@ -2,11 +2,11 @@ name        "base"
 description "base configuration"
 
 run_list    "role[base]",
-            "recipe[yum]",
             "recipe[user]",
             "recipe[sudo]",
             "recipe[openssh]",
             "recipe[create_working_user]",
+            "recipe[base::yum]",
             "recipe[simple_iptables]",
             "recipe[ntp]",
             "recipe[nginx]",
@@ -15,7 +15,6 @@ run_list    "role[base]",
             "recipe[php::module_mbstring]",
             "recipe[php::module_mysql]",
             "recipe[php::module_mcrypt]",
-            "recipe[base::yum]",
             "recipe[mysql::server]",
             "recipe[mysql::client]",
             "recipe[database::mysql]",
@@ -44,6 +43,10 @@ default_attributes(
                        "-6 default ignore",
                        "127.0.0.1",
                        "ntp.nict.jp kod nomodify notrap nopeer noquery"]
+  },
+  "php" => {
+    "use_atomic_repo" => false,
+    "mysql_module_edition" => "mysql",
   },
   "mysql" => {
     "server_root_password" => "123456"
