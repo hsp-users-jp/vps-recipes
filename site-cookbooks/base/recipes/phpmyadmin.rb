@@ -9,6 +9,8 @@
 
 include_recipe 'phpmyadmin'
 
+db_users_root = data_bag_item('db_users', 'root')
+
 nginx_sites_available = "#{node['nginx']['dir']}/sites-available/localhost-phpmyadmin.conf"
 
 template nginx_sites_available do
@@ -22,7 +24,7 @@ end
 phpmyadmin_db 'localhost' do
 	host '127.0.0.1'
 	port 3306
-	username 'root'
-	password 'qazwsx'
+	username db_users_root['username']
+	password db_users_root['password']
 	hide_dbs %w{ information_schema mysql phpmyadmin performance_schema }
 end

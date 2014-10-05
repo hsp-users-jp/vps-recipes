@@ -2,7 +2,7 @@
 # Cookbook Name:: www-pkg.hsp-users.jp
 # Recipe:: default
 #
-# Copyright 2014, YOUR_COMPANY_NAME
+# Copyright 2014, sharkpp
 #
 # All rights reserved - Do Not Redistribute
 #
@@ -13,6 +13,8 @@ o = ['!', '#', '$', '%', '&', '(', ')', '*', '+', ',', '-', '.', '/', ':',
 
 nginx_sites_available = "#{node['nginx']['dir']}/sites-available/pkg.hsp-users.jp"
 nginx_sites_enabled   = "#{node['nginx']['dir']}/sites-enabled/pkg.hsp-users.jp"
+db_users_root = data_bag_item('db_users', 'root')
+db_users_pkg_hsp_users_jp = data_bag_item('db_users', 'pkg_hsp_users_jp')
 
 # enable pkg.hsp-users.jp
 execute "enable-pkg.hsp-users.jp" do
@@ -54,22 +56,10 @@ php_fpm "pkg.hsp-users.jp" do
   })
 end
 
-# install git command
-%w{git}.each do |pkg|
-    package pkg do
-#        options "--enablerepo=remi"
-        action :install
-    end
-end
-
-#mysql> GRANT SELECT , INSERT , UPDATE , DELETE ON *.* TO ユーザＩＤ@"localhost" IDENTIFIED BY "パスワード";
-#mysql> FLUSH PRIVILEGES;
-#GRANT SELECT , INSERT , UPDATE , DELETE , CREATE , DROP , INDEX , ALTER , CREATE TEMPORARY TABLES , CREATE VIEW , EVENT, TRIGGER, SHOW VIEW , CREATE ROUTINE , ALTER ROUTINE , EXECUTE ON `pkg_hsp_users_jp`.* TO 'fuel_app'@'localhost' IDENTIFIED BY "パスワード";
-
 mysql_connection_info = {
   :host     => 'localhost',
-  :username => 'root',
-  :password => node['mysql']['server_root_password']
+  :username => db_users_root['username'],
+  :password => db_users_root['password']
 }
 
 mysql_database 'pkg_hsp_users_jp' do
@@ -77,9 +67,9 @@ mysql_database 'pkg_hsp_users_jp' do
   action :create
 end
 
-mysql_database_user 'pkg_admin' do
+mysql_database_user db_users_pkg_hsp_users_jp['username'] do
   connection    mysql_connection_info
-  password      'super_secret****a'
+  password      db_users_pkg_hsp_users_jp['password']
   database_name 'pkg_hsp_users_jp'
   host          'localhost'
   privileges    [:all]
@@ -108,6 +98,14 @@ ya_piwik_site 'make piwik config' do
   action :create
 end
 
+# install git command
+%w{git}.each do |pkg|
+  package pkg do
+    options "--enablerepo=remi"
+#   action :install
+  end
+end
+
 # checkout pkg.hsp-users.jp from github.com
 git "/var/www/pkg.hsp-users.jp" do
   repository "https://github.com/hsp-users-jp/pkg.hsp-users.jp.git"
@@ -126,20 +124,30 @@ execute "composer-install" do
   EOC
 end
 
-%w{db.php opauth.php piwik.php}.each do |file|
-  api = YaPiwik::API.new(node.run_context)
-  idsite = api.site_id_from_site_url('http://pkg.hsp-users.jp/')
-  template "/var/www/pkg.hsp-users.jp/fuel/app/config/production/#{file}" do
-    source "fuel-#{file}.erb"
-    owner "nginx"
-    group "nginx"
-    mode 0644
-    variables({
-      :piwik_token => api.token,
-      :piwik_idsite => idsite,
-      :salt => (0...63).map { o[rand(o.length)] }.join
-    })
+ruby_block "create /opt/nginx/conf/nginx.conf from template" do
+  block do
+    api                 = YaPiwik::API.new(node.run_context)
+    idsite              = api.site_id_from_site_url('http://pkg.hsp-users.jp/')
+    opauth_twitter      = data_bag_item('opauth', 'twitter')
+
+    %w{db.php opauth.php piwik.php}.each do |file|
+      tmpl = Chef::Resource::Template.new "/var/www/pkg.hsp-users.jp/fuel/app/config/production/#{file}", run_context
+      tmpl.source "fuel-#{file}.erb"
+      tmpl.owner "nginx"
+      tmpl.group "nginx"
+      tmpl.mode 0644
+      tmpl.variables({
+          :piwik_token => api.token,
+          :piwik_idsite => idsite,
+          :db_pkg_hsp_users_jp => db_users_pkg_hsp_users_jp,
+          :opauth_twitter_key => opauth_twitter['key'],
+          :opauth_twitter_secret => opauth_twitter['secret'],
+          :salt => (0...63).map { o[rand(o.length)] }.join
+        })
+      tmpl.run_action :create
+    end
   end
+  action :run
 end
 
 execute "migration" do

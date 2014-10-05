@@ -1,4 +1,9 @@
+.kitchen/
+.kitchen.local.yml
+.bundle/
+.vagrant/
+vendor/
 cookbooks/*
 nodes/*
 id_rsa*
-
+data_bags/*/*.json
