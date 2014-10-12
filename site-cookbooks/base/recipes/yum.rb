@@ -22,6 +22,7 @@ yum_repository 'remi' do
   baseurl 'http://rpms.famillecollet.com/enterprise/6/remi/x86_64/'
   gpgkey 'http://rpms.famillecollet.com/RPM-GPG-KEY-remi'
   fastestmirror_enabled true
+  enabled true
   action :create
 end
 

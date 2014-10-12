@@ -15,6 +15,7 @@ nginx_sites_available = "#{node['nginx']['dir']}/sites-available/pkg.hsp-users.j
 nginx_sites_enabled   = "#{node['nginx']['dir']}/sites-enabled/pkg.hsp-users.jp"
 db_users_root = data_bag_item('db_users', 'root')
 db_users_pkg_hsp_users_jp = data_bag_item('db_users', 'pkg_hsp_users_jp')
+install_dir = "/var/www/pkg.hsp-users.jp"
 
 # enable pkg.hsp-users.jp
 execute "enable-pkg.hsp-users.jp" do
@@ -36,7 +37,7 @@ end
 
 php_fpm "pkg.hsp-users.jp" do
   action :add
-  user 'nginx'
+  user  'nginx'
   group 'nginx'
   socket true
   socket_path '/var/run/php-fpm/pkg.hsp-users.jp.php-fpm.sock'
@@ -48,7 +49,7 @@ php_fpm "pkg.hsp-users.jp" do
   terminate_timeout (node['php']['ini_settings']['max_execution_time'].to_i + 20)
   slow_filename "#{node['php']['fpm_log_dir']}/pkg.hsp-users.jp.slow.log"
   value_overrides({
-    :chdir => "/var/www/pkg.hsp-users.jp",
+    :chdir => "#{install_dir}",
     :error_log => "#{node['php']['fpm_log_dir']}/pkg.hsp-users.jp.error.log"
   })
   env_overrides({
@@ -107,7 +108,7 @@ end
 end
 
 # checkout pkg.hsp-users.jp from github.com
-git "/var/www/pkg.hsp-users.jp" do
+git "#{install_dir}" do
   repository "https://github.com/hsp-users-jp/pkg.hsp-users.jp.git"
   reference "master"
   action :sync
@@ -117,24 +118,26 @@ end
 # inatall composer packages
 execute "composer-install" do
   command <<-EOC
-     pushd /var/www/pkg.hsp-users.jp/
+     pushd "#{install_dir}"
      php composer.phar self-update
      php -d disable_functions="" composer.phar install
      popd
   EOC
 end
 
-ruby_block "create /opt/nginx/conf/nginx.conf from template" do
+ruby_block "create pkg.hsp-users.jp production configuration from template" do
   block do
-    api                 = YaPiwik::API.new(node.run_context)
+    cookbook            = self.cookbook_name
+    api                 = YaPiwik::API.new(run_context)
     idsite              = api.site_id_from_site_url('http://pkg.hsp-users.jp/')
     opauth_twitter      = data_bag_item('opauth', 'twitter')
 
     %w{db.php opauth.php piwik.php}.each do |file|
-      tmpl = Chef::Resource::Template.new "/var/www/pkg.hsp-users.jp/fuel/app/config/production/#{file}", run_context
+      tmpl = Chef::Resource::Template.new "#{install_dir}/fuel/app/config/#{file}", run_context
+      tmpl.cookbook cookbook.to_s
       tmpl.source "fuel-#{file}.erb"
-      tmpl.owner "nginx"
-      tmpl.group "nginx"
+      tmpl.owner "root"
+      tmpl.group "root"
       tmpl.mode 0644
       tmpl.variables({
           :piwik_token => api.token,
@@ -152,7 +155,7 @@ end
 
 execute "migration" do
   command <<-EOC
-     pushd /var/www/pkg.hsp-users.jp/
+     pushd "#{install_dir}"
      env FUEL_ENV=production php oil r migrate --all
      popd
   EOC
