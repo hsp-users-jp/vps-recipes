@@ -1,12 +1,7 @@
 name        "base"
 description "base configuration"
 
-run_list    "role[base]",
-            "recipe[user]",
-            "recipe[sudo]",
-            "recipe[openssh]",
-            "recipe[create_working_user]",
-            "recipe[base::yum]",
+run_list    "recipe[base::yum]",
             "recipe[simple_iptables]",
             "recipe[ntp]",
             "recipe[nginx]",
@@ -25,18 +20,6 @@ run_list    "role[base]",
             "recipe[www-pkg.hsp-users.jp]"
 
 default_attributes(
-  "authorization" => {
-    "sudo" => {
-      "users" => [ "john" ],   
-      "passwordless" => true
-    }
-  },
-  "openssh" => {
-    "server" => {
-      "permit_root_login" => "no", 
-      "password_authentication" => "no"
-    }
-  },
   "ntp" => {
     "servers" => ["ntp.nict.jp"],
     "restrictions" => ["default ignore",
@@ -46,7 +29,7 @@ default_attributes(
   },
   "php" => {
     "use_atomic_repo" => false,
-    "mysql_module_edition" => "mysql",
+    "mysql_module_edition_" => "mysql",
   },
   "mysql" => {
     "server_root_password" => "123456"

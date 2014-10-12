@@ -1,7 +1,10 @@
 {
   "run_list":[
+    "recipe[base::hosts]",
     "role[base]"
   ],
+          "fqdn": "backend.chef-server.com",
+          "ipaddress": "10.10.1.0",
   "mysql": {
     "server_root_password": "qazwsx"
   },

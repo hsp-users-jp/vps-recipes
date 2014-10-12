@@ -1,0 +1,32 @@
+#!/bin/bash
+
+exec_usage () {
+  echo 'usage: test <command> [option]'
+  echo 'commands are:'
+  echo '  prepare  xxx'
+  echo '  cook     xxx'
+  echo '  ssh      xxx'
+}
+
+exec_prepare () {
+  bundle ex vagrant destroy -f
+  bundle ex vagrant up
+  bundle ex vagrant ssh-config --host=tmphost > .vagrant/sshconfig
+  bundle ex knife solo prepare -F .vagrant/sshconfig tmphost nodes/vagrant.json
+  bundle ex knife solo cook -F .vagrant/sshconfig tmphost nodes/vagrant_create_users.json
+}
+
+exec_cook () {
+  bundle ex knife solo cook -VVV -F .vagrant/sshconfig -i id_rsa -x john tmphost nodes/vagrant.json
+}
+
+exec_ssh () {
+  bundle ex vagrant ssh
+}
+
+case "$1" in
+  "prepare" ) exec_prepare ;;
+  "cook"    ) exec_cook ;;
+  "ssh"     ) exec_ssh ;;
+  *         ) exec_usage ;;
+esac
