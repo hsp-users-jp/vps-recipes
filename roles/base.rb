@@ -4,6 +4,7 @@ description "base configuration"
 run_list    "recipe[base::yum]",
             "recipe[simple_iptables]",
             "recipe[ntp]",
+            "recipe[cron]",
             "recipe[nginx]",
             "recipe[php]",
             "recipe[php::fpm]",

@@ -160,3 +160,32 @@ execute "migration" do
      popd
   EOC
 end
+
+cron_d 'account-expired-check' do
+  minute  0
+  command '/usr/bin/php/php #{install_dir}/oil r cron:account_expired'
+  user    user
+end
+
+cron_d 'clean-temporary' do
+  minute  5
+  command '/usr/bin/php/php #{install_dir}/oil r cron:clean'
+  user    user
+end
+
+=begin
+
+cron_d 'virus-scan' do
+  minute  30
+  command '/usr/bin/php/php #{install_dir}/oil r cron:scan'
+  user    user
+end
+
+cron_d 'report' do
+  minute  30
+  hour    0
+  command '/usr/bin/php/php #{install_dir}/oil r cron:report'
+  user    user
+end
+
+=end

@@ -6,6 +6,7 @@ description      'Installs/Configures www-pkg.hsp-users.jp'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '0.1.0'
 depends          'nginx'
+depends          'cron'
 depends          'php'
 depends          'mysql'
 depends          'database'

@@ -6,6 +6,7 @@ cookbook 'openssh'
 cookbook 'yum'
 cookbook 'simple_iptables'
 cookbook 'ntp'
+cookbook 'cron'
 cookbook 'nginx'
 cookbook 'php',
 	git: 'git://github.com/priestjim/chef-php.git'
