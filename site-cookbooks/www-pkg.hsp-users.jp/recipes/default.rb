@@ -133,7 +133,7 @@ ruby_block "create pkg.hsp-users.jp production configuration from template" do
     opauth_twitter      = data_bag_item('opauth', 'twitter')
 
     %w{db.php opauth.php piwik.php}.each do |file|
-      tmpl = Chef::Resource::Template.new "#{install_dir}/fuel/app/config/#{file}", run_context
+      tmpl = Chef::Resource::Template.new "#{install_dir}/fuel/app/config/production/#{file}", run_context
       tmpl.cookbook cookbook.to_s
       tmpl.source "fuel-#{file}.erb"
       tmpl.owner "root"
