@@ -161,15 +161,15 @@ execute "migration" do
   EOC
 end
 
-cron_d 'account-expired-check' do
+cron_d 'pkg.hsp-users.jp.account-expired-check' do
   minute  0
-  command '/usr/bin/php/php #{install_dir}/oil r cron:account_expired'
+  command "/usr/bin/php/php #{install_dir}/oil r cron:account_expired"
   user    user
 end
 
-cron_d 'clean-temporary' do
+cron_d 'pkg.hsp-users.jp.clean-temporary' do
   minute  5
-  command '/usr/bin/php/php #{install_dir}/oil r cron:clean'
+  command "/usr/bin/php/php #{install_dir}/oil r cron:clean"
   user    user
 end
 
