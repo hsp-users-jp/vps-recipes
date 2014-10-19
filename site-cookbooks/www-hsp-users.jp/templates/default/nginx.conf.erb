@@ -1,0 +1,26 @@
+server {
+    listen      80;
+    server_name hsp-users.jp;
+    error_log   /var/log/nginx/hsp-users.jp.error.log;
+    access_log  /var/log/nginx/hsp-users.jp.access.log;
+    root  /var/www/hsp-users.jp/public/;
+    location / {
+        index index.html;
+#       index index.php;
+        # Rewrite FuelPHP
+        if (-f $request_filename) {
+            expires 30d;
+            break;
+        }
+#       if (!-e $request_filename) {
+#           rewrite ^(.*)$ /index.php?q=$1 last;
+#       }
+    }
+    location ~ \.php$ {
+        fastcgi_pass   unix:/var/run/php-fpm/hsp-users.jp.php-fpm.sock;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        fastcgi_param  SCRIPT_NAME      $fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}

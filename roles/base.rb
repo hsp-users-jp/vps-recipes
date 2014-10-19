@@ -20,6 +20,7 @@ run_list    "recipe[base::timezone]",
             "recipe[base::iptables]",
             "recipe[base::phpmyadmin]",
             "recipe[base::piwik]",
+            "recipe[www-hsp-users.jp]",
             "recipe[www-pkg.hsp-users.jp]"
 
 default_attributes(
