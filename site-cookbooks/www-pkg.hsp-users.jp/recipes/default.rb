@@ -17,14 +17,7 @@ db_users_root = data_bag_item('db_users', 'root')
 db_users_pkg_hsp_users_jp = data_bag_item('db_users', 'pkg_hsp_users_jp')
 install_dir = "/var/www/pkg.hsp-users.jp"
 
-# enable pkg.hsp-users.jp
-execute "enable-pkg.hsp-users.jp" do
-  command <<-EOC
-     ln -fs #{nginx_sites_available} #{nginx_sites_enabled}
-  EOC
-  not_if { ::File.exists?(nginx_sites_enabled) }
-end
-
+# configure nginx for pkg.hsp-users.jp
 template nginx_sites_available do
   source "nginx.conf.erb"
   # owner and group is root user, and permition is 644
@@ -35,6 +28,7 @@ template nginx_sites_available do
   notifies :reload, "service[nginx]"
 end
 
+# configure php-fpm for pkg.hsp-users.jp
 php_fpm "pkg.hsp-users.jp" do
   action :add
   user  'nginx'
@@ -55,6 +49,14 @@ php_fpm "pkg.hsp-users.jp" do
   env_overrides({
     :FUEL_ENV => "production"
   })
+end
+
+# enable pkg.hsp-users.jp
+execute "enable-pkg.hsp-users.jp" do
+  command <<-EOC
+     ln -fs #{nginx_sites_available} #{nginx_sites_enabled}
+  EOC
+  not_if { ::File.exists?(nginx_sites_enabled) }
 end
 
 mysql_connection_info = {
