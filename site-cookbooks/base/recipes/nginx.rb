@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: base
-# Recipe:: default
+# Cookbook Name:: base::nginx
+# Recipe:: nginx
 #
-# Copyright 2014, YOUR_COMPANY_NAME
+# Copyright 2014, sharkpp
 #
-# All rights reserved - Do Not Redistribute
+# The MIT License
 #
 
 template "/etc/nginx/sites-available/localhost" do

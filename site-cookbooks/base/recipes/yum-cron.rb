@@ -1,10 +1,10 @@
 #
 # Cookbook Name:: base::yum-cron
-# Recipe:: default
+# Recipe:: yum-cron
 #
-# Copyright 2014, YOUR_COMPANY_NAME
+# Copyright 2014, sharkpp
 #
-# All rights reserved - Do Not Redistribute
+# The MIT License
 #
 
 package 'yum-cron' do

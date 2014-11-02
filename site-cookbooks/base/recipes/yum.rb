@@ -1,10 +1,10 @@
 #
 # Cookbook Name:: base::yum
-# Recipe:: default
+# Recipe:: yum
 #
-# Copyright 2014, YOUR_COMPANY_NAME
+# Copyright 2014, sharkpp
 #
-# All rights reserved - Do Not Redistribute
+# The MIT License
 #
 
 # add the EPEL repo

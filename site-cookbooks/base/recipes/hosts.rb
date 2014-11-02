@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: base
-# Recipe:: default
+# Cookbook Name:: base::hosts
+# Recipe:: hosts
 #
-# Copyright 2014, YOUR_COMPANY_NAME
+# Copyright 2014, sharkpp
 #
-# All rights reserved - Do Not Redistribute
+# The MIT License
 #
 
 bash 'add_hostname_to_hosts' do

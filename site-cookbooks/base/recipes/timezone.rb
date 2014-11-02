@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: timezone
-# Recipe:: default
+# Cookbook Name:: base::timezone
+# Recipe:: timezone
 #
-# Copyright 2014, YOUR_COMPANY_NAME
+# Copyright 2014, sharkpp
 #
-# All rights reserved - Do Not Redistribute
+# The MIT License
 #
 
 execute "copy-asia-tokyo-timezone" do
