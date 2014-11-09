@@ -165,13 +165,13 @@ end
 
 cron_d 'pkg.hsp-users.jp.account-expired-check' do
   minute  0
-  command "/usr/bin/php/php #{install_dir}/oil r cron:account_expired"
+  command "/usr/bin/php #{install_dir}/oil r cron:account_expired"
   user    user
 end
 
 cron_d 'pkg.hsp-users.jp.clean-temporary' do
   minute  5
-  command "/usr/bin/php/php #{install_dir}/oil r cron:clean"
+  command "/usr/bin/php #{install_dir}/oil r cron:clean"
   user    user
 end
 
@@ -179,14 +179,14 @@ end
 
 cron_d 'virus-scan' do
   minute  30
-  command '/usr/bin/php/php #{install_dir}/oil r cron:scan'
+  command '/usr/bin/php #{install_dir}/oil r cron:scan'
   user    user
 end
 
 cron_d 'report' do
   minute  30
   hour    0
-  command '/usr/bin/php/php #{install_dir}/oil r cron:report'
+  command '/usr/bin/php #{install_dir}/oil r cron:report'
   user    user
 end
 
