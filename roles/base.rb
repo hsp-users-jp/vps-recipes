@@ -1,9 +1,10 @@
 name        "base"
 description "base configuration"
 
-run_list    "recipe[base::timezone]",
+run_list    "recipe[simple_iptables]",
+            "recipe[base::timezone]",
             "recipe[base::yum]",
-            "recipe[simple_iptables]",
+            "recipe[base::bind]",
             "recipe[ntp]",
             "recipe[cron]",
             "recipe[nginx]",
@@ -24,6 +25,9 @@ run_list    "recipe[base::timezone]",
             "recipe[www-pkg.hsp-users.jp]"
 
 default_attributes(
+  "cron" => {
+    "mailto" => "root"
+  },
   "ntp" => {
     "servers" => ["ntp.nict.jp"],
     "restrictions" => ["default ignore",

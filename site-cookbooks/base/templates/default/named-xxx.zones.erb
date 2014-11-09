@@ -1,0 +1,15 @@
+
+<% @zones.uniq.each do |zone| -%>
+zone "<%= zone[:domain] %>" IN {
+    type <% if !zone.has_key?(:master) || zone[:master] then -%>master<% else -%>slave<% end -%>;
+    file "<%= zone[:path] %>";
+<% zone[:fields].uniq.each do |field| -%>
+<% if field[:value].is_a?(Array) then -%>
+    <%= field[:name] %> { <% field[:value].uniq.each do |value| -%><%= value %>; <% end -%> };
+<% else -%>
+    <%= field[:name] %> <%= field[:value] %>;
+<% end -%>
+<% end -%>
+};
+
+<% end -%>

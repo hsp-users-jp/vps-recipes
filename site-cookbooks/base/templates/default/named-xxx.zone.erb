@@ -1,0 +1,13 @@
+$ORIGIN <%= @domain %>
+$TTL <%= @ttl %>
+@ IN SOA <%= @dns_server %> <%= @hostmaster %> (
+        <%= @serial %>
+        <%= @refresh %>
+        <%= @retry %>
+        <%= @expire %>
+        <%= @minimum %>
+        )
+
+<% @records.uniq.each do |record| -%>
+<%= record[:name] %> IN <%= record[:type] %> <% if 'MX' == record[:type] then -%><%= record[:preference] %><% end -%> <%= record[:value] %>
+<% end -%>
