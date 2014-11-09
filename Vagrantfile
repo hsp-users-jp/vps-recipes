@@ -9,6 +9,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
 
+# config.vm.hostname = "bind-strong-berkshelf"
+
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "centos65_x86_64"
   config.vm.box_url = "https://github.com/2creatives/vagrant-centos/releases/download/v6.5.3/centos65-x86_64-20140116.box"

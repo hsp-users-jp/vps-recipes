@@ -7,7 +7,7 @@ DEPENDENCIES
   openssh
   php
     git: git://github.com/priestjim/chef-php.git
-    revision: e3f612d0234d0afc6adc806285b2950b3f063e3a
+    revision: d239d419f3ae0c6da0ff57939dabdbe253715729
   phpmyadmin
     git: git://github.com/priestjim/chef-phpmyadmin.git
     revision: 620e5bc44dc60d6ab32dbeae6d5a9d93b77795ef
@@ -25,12 +25,12 @@ GRAPH
     logrotate (>= 0.0.0)
     pacman (>= 0.0.0)
   apt (2.6.0)
-  aws (2.4.0)
+  aws (2.5.0)
   bluepill (2.3.1)
     rsyslog (>= 0.0.0)
-  build-essential (2.0.6)
+  build-essential (2.1.2)
   chef-sugar (2.4.1)
-  cron (1.6.0)
+  cron (1.6.1)
   database (2.3.0)
     aws (>= 0.0.0)
     mysql (>= 5.0.0)
@@ -39,7 +39,7 @@ GRAPH
     xfs (>= 0.0.0)
   iptables (0.14.0)
   logrotate (1.7.0)
-  mysql (5.5.4)
+  mysql (5.6.1)
     yum-mysql-community (>= 0.0.0)
   mysql-chef_gem (0.0.5)
     build-essential (>= 0.0.0)
@@ -67,7 +67,7 @@ GRAPH
     apache2 (>= 0.0.0)
     nginx (>= 0.0.0)
     php (>= 0.0.0)
-  postgresql (3.4.10)
+  postgresql (3.4.12)
     apt (>= 1.9.0)
     build-essential (>= 0.0.0)
     openssl (>= 0.0.0)
@@ -86,8 +86,8 @@ GRAPH
   ya-piwik (0.1.0)
     nginx (>= 0.0.0)
     php (>= 0.0.0)
-  yum (3.3.2)
-  yum-epel (0.5.1)
+  yum (3.4.1)
+  yum-epel (0.5.2)
     yum (~> 3.0)
   yum-mysql-community (0.1.10)
     yum (>= 3.0)
